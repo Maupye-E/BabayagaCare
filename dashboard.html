@@ -10,19 +10,26 @@
     <div class="container">
       <div class="dashboard-header">
         <div>
-          <h2>👋 Welcome, Demo User!</h2>
-          <p>📍 Soweto | 🗣️ English | 👥 Patient</p>
+          <h2>👋 Welcome, <span id="userName">User</span>!</h2>
+          <p>
+            📍 <span id="userLocation">Loading...</span> | 🗣️
+            <span id="userLanguage">Loading...</span> | 👥
+            <span id="userRole">Loading...</span>
+          </p>
         </div>
         <div class="header-buttons">
-          <button
-            onclick="window.location.href = 'change_password.html'"
-            class="btn btn-secondary"
+          <a href="change_password.html" class="btn btn-secondary"
+            >🔐 Change Password</a
           >
-            🔐 Change Password
-          </button>
-          <button onclick="demoLogout()" class="btn btn-secondary">
-            🚪 Logout
-          </button>
+          <a
+            href="logout.html"
+            class="btn btn-secondary"
+            onclick="
+              handleLogout();
+              return false;
+            "
+            >🚪 Logout</a
+          >
         </div>
       </div>
 
@@ -30,19 +37,19 @@
 
       <div class="stats-grid">
         <div class="stat-card">
-          <h3 id="medCount">3</h3>
+          <h3 id="medCount">0</h3>
           <p>💊 Medications</p>
         </div>
         <div class="stat-card">
-          <h3 id="symCount">2</h3>
+          <h3 id="symCount">0</h3>
           <p>📝 Symptoms</p>
         </div>
         <div class="stat-card">
-          <h3 id="helpCount">1</h3>
+          <h3 id="helpCount">0</h3>
           <p>🤝 Help Requests</p>
         </div>
         <div class="stat-card">
-          <h3 id="adherenceRate">85%</h3>
+          <h3 id="adherenceRate">0%</h3>
           <p>📊 Adherence</p>
           <div class="adherence-bar">
             <div class="adherence-fill" id="adherenceFill"></div>
@@ -51,90 +58,9 @@
       </div>
 
       <div class="dashboard-grid">
-        <!-- Medications Card -->
         <div class="dashboard-card">
           <h3>💊 My Medications</h3>
-          <div id="medicationList">
-            <div class="medication-item">
-              <div class="item-header">
-                <strong>💊 ARV Treatment</strong>
-                <div class="item-actions">
-                  <button
-                    onclick="markTaken(this)"
-                    class="btn-icon"
-                    title="Mark as taken"
-                  >
-                    ✅
-                  </button>
-                  <button
-                    onclick="deleteMedication(this)"
-                    class="btn-icon"
-                    title="Delete"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-              <div class="item-details">
-                <div>💊 Dosage: 1 tablet</div>
-                <div>⏰ Time: 08:00</div>
-                <div>📝 Take with food</div>
-                <div class="med-status">⭕ Not taken yet</div>
-              </div>
-            </div>
-            <div class="medication-item">
-              <div class="item-header">
-                <strong>💊 Multivitamin</strong>
-                <div class="item-actions">
-                  <button
-                    onclick="markTaken(this)"
-                    class="btn-icon"
-                    title="Mark as taken"
-                  >
-                    ✅
-                  </button>
-                  <button
-                    onclick="deleteMedication(this)"
-                    class="btn-icon"
-                    title="Delete"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-              <div class="item-details">
-                <div>💊 Dosage: 1 tablet</div>
-                <div>⏰ Time: 20:00</div>
-                <div class="med-status">⭕ Not taken yet</div>
-              </div>
-            </div>
-            <div class="medication-item">
-              <div class="item-header">
-                <strong>💊 Blood Pressure</strong>
-                <div class="item-actions">
-                  <button
-                    onclick="markTaken(this)"
-                    class="btn-icon"
-                    title="Mark as taken"
-                  >
-                    ✅
-                  </button>
-                  <button
-                    onclick="deleteMedication(this)"
-                    class="btn-icon"
-                    title="Delete"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-              <div class="item-details">
-                <div>💊 Dosage: 10mg</div>
-                <div>⏰ Time: 08:00</div>
-                <div class="med-status">⭕ Not taken yet</div>
-              </div>
-            </div>
-          </div>
+          <div id="medicationList"></div>
           <button
             onclick="showAddMedication()"
             class="btn btn-primary full-width"
@@ -143,96 +69,22 @@
           </button>
         </div>
 
-        <!-- Symptoms Card -->
         <div class="dashboard-card">
           <h3>📝 Symptom Tracker</h3>
-          <div id="symptomList">
-            <div class="symptom-item">
-              <div class="item-header">
-                <strong>🤕 Headache</strong>
-                <button
-                  onclick="deleteSymptom(this)"
-                  class="btn-icon"
-                  title="Delete"
-                >
-                  🗑️
-                </button>
-              </div>
-              <div class="item-details">
-                <div>Severity: ⭐⭐ (Moderate)</div>
-                <div>📅 2024-06-04</div>
-                <div>📝 Took pain reliever, helped a bit</div>
-              </div>
-            </div>
-            <div class="symptom-item">
-              <div class="item-header">
-                <strong>😴 Fatigue</strong>
-                <button
-                  onclick="deleteSymptom(this)"
-                  class="btn-icon"
-                  title="Delete"
-                >
-                  🗑️
-                </button>
-              </div>
-              <div class="item-details">
-                <div>Severity: ⭐⭐⭐ (Uncomfortable)</div>
-                <div>📅 2024-06-03</div>
-              </div>
-            </div>
-          </div>
+          <div id="symptomList"></div>
           <button onclick="showAddSymptom()" class="btn btn-primary full-width">
             + Log Symptom
           </button>
         </div>
 
-        <!-- Health Lessons Card -->
         <div class="dashboard-card">
           <h3>📚 Health Education</h3>
-          <div id="lessonList">
-            <div
-              class="lesson-item"
-              onclick="showLessonDemo('HIV/AIDS Awareness')"
-            >
-              <h4>🩺 Understanding HIV/AIDS</h4>
-              <p>
-                Learn about HIV transmission, treatment options, and living a
-                healthy life with HIV...
-              </p>
-              <span class="read-more">Click to read full lesson →</span>
-            </div>
-            <div
-              class="lesson-item"
-              onclick="showLessonDemo('Diabetes Management')"
-            >
-              <h4>🍎 Diabetes Management</h4>
-              <p>
-                Tips for managing blood sugar, healthy eating, and medication
-                adherence...
-              </p>
-              <span class="read-more">Click to read full lesson →</span>
-            </div>
-            <div class="lesson-item" onclick="showLessonDemo('Hypertension')">
-              <h4>❤️ Understanding Hypertension</h4>
-              <p>
-                Learn about high blood pressure, risk factors, and lifestyle
-                changes...
-              </p>
-              <span class="read-more">Click to read full lesson →</span>
-            </div>
-          </div>
+          <div id="lessonList"></div>
         </div>
 
-        <!-- Community Support Card -->
         <div class="dashboard-card">
           <h3>🤝 Community Support</h3>
-          <div id="helpRequestList">
-            <div class="help-item">
-              <strong>💊 Medication Pickup</strong>
-              <div class="help-status">Status: Pending</div>
-              <div class="help-date">📅 2024-06-02</div>
-            </div>
-          </div>
+          <div id="helpRequestList"></div>
           <button onclick="showHelpForm()" class="btn btn-primary full-width">
             📢 Request Help
           </button>
@@ -256,13 +108,10 @@
             >&times;</span
           >
         </div>
-        <form
-          id="addMedicationForm"
-          onsubmit="return addMedicationDemo(event);"
-        >
+        <form id="addMedicationForm" onsubmit="return addMedication(event);">
           <div class="form-group">
-            <label>💊 Medication Name *</label>
-            <input
+            <label>💊 Medication Name *</label
+            ><input
               type="text"
               id="medName"
               required
@@ -270,25 +119,20 @@
             />
           </div>
           <div class="form-group">
-            <label>💊 Dosage *</label>
-            <input
+            <label>💊 Dosage *</label
+            ><input
               type="text"
               id="medDosage"
               required
-              placeholder="e.g., 1 tablet, 10ml"
+              placeholder="e.g., 1 tablet"
             />
           </div>
           <div class="form-group">
-            <label>⏰ Time *</label>
-            <input type="time" id="medTime" required />
+            <label>⏰ Time *</label><input type="time" id="medTime" required />
           </div>
           <div class="form-group">
-            <label>📝 Instructions</label>
-            <textarea
-              id="medInstructions"
-              rows="2"
-              placeholder="e.g., Take with food, before bedtime"
-            ></textarea>
+            <label>📝 Instructions</label
+            ><textarea id="medInstructions" rows="2"></textarea>
           </div>
           <div class="form-buttons">
             <button
@@ -296,11 +140,8 @@
               onclick="closeModal('medicationModal')"
               class="btn btn-secondary"
             >
-              Cancel
-            </button>
-            <button type="submit" class="btn btn-primary">
-              Save Medication
-            </button>
+              Cancel</button
+            ><button type="submit" class="btn btn-primary">Save</button>
           </div>
         </form>
       </div>
@@ -315,35 +156,24 @@
             >&times;</span
           >
         </div>
-        <form id="addSymptomForm" onsubmit="return addSymptomDemo(event);">
+        <form id="addSymptomForm" onsubmit="return addSymptom(event);">
           <div class="form-group">
-            <label>🤒 Symptom *</label>
-            <input
-              type="text"
-              id="symptomName"
-              required
-              placeholder="e.g., Headache, Fever, Cough"
-            />
+            <label>🤒 Symptom *</label
+            ><input type="text" id="symptomName" required />
           </div>
           <div class="form-group">
             <label>📊 Severity (1-5) *</label>
             <select id="symptomSeverity">
-              <option value="1">1 - Mild (Barely noticeable)</option>
-              <option value="2">2 - Moderate (Annoying but manageable)</option>
-              <option value="3" selected>
-                3 - Uncomfortable (Hard to ignore)
-              </option>
-              <option value="4">4 - Severe (Difficult to function)</option>
-              <option value="5">5 - Very Severe (Need immediate help)</option>
+              <option value="1">1 - Mild</option>
+              <option value="2">2 - Moderate</option>
+              <option value="3" selected>3 - Uncomfortable</option>
+              <option value="4">4 - Severe</option>
+              <option value="5">5 - Very Severe</option>
             </select>
           </div>
           <div class="form-group">
-            <label>📝 Notes</label>
-            <textarea
-              id="symptomNotes"
-              rows="2"
-              placeholder="Additional details..."
-            ></textarea>
+            <label>📝 Notes</label
+            ><textarea id="symptomNotes" rows="2"></textarea>
           </div>
           <div class="form-buttons">
             <button
@@ -351,9 +181,8 @@
               onclick="closeModal('symptomModal')"
               class="btn btn-secondary"
             >
-              Cancel
-            </button>
-            <button type="submit" class="btn btn-primary">Save Symptom</button>
+              Cancel</button
+            ><button type="submit" class="btn btn-primary">Save</button>
           </div>
         </form>
       </div>
@@ -366,39 +195,29 @@
           <h3>Request Help</h3>
           <span class="close" onclick="closeModal('helpModal')">&times;</span>
         </div>
-        <form id="helpRequestForm" onsubmit="return addHelpRequestDemo(event);">
+        <form id="helpRequestForm" onsubmit="return addHelpRequest(event);">
           <div class="form-group">
             <label>Type of Help *</label>
             <select id="helpType" required>
               <option value="medication">💊 Medication Pickup</option>
-              <option value="clinic">🚗 Clinic/Hospital Ride</option>
+              <option value="clinic">🚗 Clinic Ride</option>
               <option value="food">🍲 Food Parcel</option>
-              <option value="care">👵 Home Care Check-in</option>
+              <option value="care">👵 Home Care</option>
               <option value="other">📞 Other</option>
             </select>
           </div>
           <div class="form-group">
-            <label>📍 Your Location *</label>
-            <input
-              type="text"
-              id="helpLocation"
-              required
-              placeholder="e.g., Soweto, Khayelitsha"
-            />
+            <label>📍 Your Location *</label
+            ><input type="text" id="helpLocation" required />
           </div>
           <div class="form-group">
-            <label>📝 Details *</label>
-            <textarea
-              id="helpDetails"
-              rows="3"
-              required
-              placeholder="Please provide details that will help the volunteer..."
-            ></textarea>
+            <label>📝 Details *</label
+            ><textarea id="helpDetails" rows="3" required></textarea>
           </div>
           <div class="form-group">
             <label
-              ><input type="checkbox" id="helpUrgent" /> 🚨 This is urgent
-              (needs help today)</label
+              ><input type="checkbox" id="helpUrgent" /> 🚨 This is
+              urgent</label
             >
           </div>
           <div class="form-buttons">
@@ -407,11 +226,8 @@
               onclick="closeModal('helpModal')"
               class="btn btn-secondary"
             >
-              Cancel
-            </button>
-            <button type="submit" class="btn btn-primary">
-              Submit Request
-            </button>
+              Cancel</button
+            ><button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
       </div>

@@ -1,5 +1,184 @@
-// Babayaga Care - Main JavaScript (Demo Version for GitHub Pages)
-// This file handles UI interactions for the demo version
+// Babayaga Care - Main JavaScript (Full Functional Version)
+
+// ============ DATA STORAGE KEYS ============
+const STORAGE_KEYS = {
+  USERS: "babayaga_users",
+  MEDICATIONS: "babayaga_medications",
+  SYMPTOMS: "babayaga_symptoms",
+  HELP_REQUESTS: "babayaga_help_requests",
+  LESSONS: "babayaga_lessons",
+  CURRENT_USER: "babayaga_current_user",
+};
+
+// ============ INITIALIZE DEFAULT DATA ============
+function initializeData() {
+  // Initialize users if empty
+  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+    const defaultUsers = [
+      {
+        id: 1,
+        name: "Admin User",
+        phone: "0834567890",
+        password: "admin123",
+        role: "admin",
+        location: "Head Office",
+        language: "English",
+        isActive: true,
+        registrationDate: new Date().toISOString().slice(0, 10),
+      },
+      {
+        id: 2,
+        name: "Mary Jones",
+        phone: "0723456789",
+        password: "volunteer123",
+        role: "volunteer",
+        location: "Khayelitsha, Cape Town",
+        language: "English",
+        isActive: true,
+        registrationDate: new Date().toISOString().slice(0, 10),
+      },
+      {
+        id: 3,
+        name: "Thabo Nkosi",
+        phone: "0712345678",
+        password: "patient123",
+        role: "patient",
+        location: "Soweto, Johannesburg",
+        language: "English",
+        isActive: true,
+        registrationDate: new Date().toISOString().slice(0, 10),
+      },
+    ];
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(defaultUsers));
+  }
+
+  // Initialize medications if empty
+  if (!localStorage.getItem(STORAGE_KEYS.MEDICATIONS)) {
+    const defaultMeds = [
+      {
+        id: 1,
+        userId: 3,
+        name: "ARV Treatment",
+        dosage: "1 tablet",
+        time: "08:00",
+        instructions: "Take with food",
+        taken: false,
+        dateAdded: new Date().toISOString().slice(0, 10),
+      },
+      {
+        id: 2,
+        userId: 3,
+        name: "Multivitamin",
+        dosage: "1 tablet",
+        time: "20:00",
+        instructions: "",
+        taken: false,
+        dateAdded: new Date().toISOString().slice(0, 10),
+      },
+      {
+        id: 3,
+        userId: 3,
+        name: "Blood Pressure",
+        dosage: "10mg",
+        time: "08:00",
+        instructions: "",
+        taken: false,
+        dateAdded: new Date().toISOString().slice(0, 10),
+      },
+    ];
+    localStorage.setItem(STORAGE_KEYS.MEDICATIONS, JSON.stringify(defaultMeds));
+  }
+
+  // Initialize symptoms if empty
+  if (!localStorage.getItem(STORAGE_KEYS.SYMPTOMS)) {
+    const defaultSymptoms = [
+      {
+        id: 1,
+        userId: 3,
+        symptomName: "Headache",
+        severity: 2,
+        notes: "Took pain reliever",
+        date: "2024-06-04",
+      },
+      {
+        id: 2,
+        userId: 3,
+        symptomName: "Fatigue",
+        severity: 3,
+        notes: "",
+        date: "2024-06-03",
+      },
+    ];
+    localStorage.setItem(
+      STORAGE_KEYS.SYMPTOMS,
+      JSON.stringify(defaultSymptoms),
+    );
+  }
+
+  // Initialize help requests if empty
+  if (!localStorage.getItem(STORAGE_KEYS.HELP_REQUESTS)) {
+    const defaultRequests = [
+      {
+        id: 1,
+        userId: 3,
+        patientName: "Thabo Nkosi",
+        type: "medication",
+        location: "Soweto",
+        details: "Need help picking up ARV medication",
+        urgent: false,
+        status: "pending",
+        requestDate: new Date().toISOString().slice(0, 10),
+      },
+    ];
+    localStorage.setItem(
+      STORAGE_KEYS.HELP_REQUESTS,
+      JSON.stringify(defaultRequests),
+    );
+  }
+
+  // Initialize lessons if empty
+  if (!localStorage.getItem(STORAGE_KEYS.LESSONS)) {
+    const defaultLessons = [
+      {
+        id: 1,
+        icon: "🩸",
+        title: "Understanding HIV/AIDS",
+        language: "English",
+        content:
+          "HIV (Human Immunodeficiency Virus) is a virus that attacks the immune system. With proper treatment (ART), people with HIV can live long, healthy lives.",
+        isActive: true,
+      },
+      {
+        id: 2,
+        icon: "🍬",
+        title: "Diabetes Management",
+        language: "English",
+        content:
+          "Diabetes is a chronic condition that affects how your body turns food into energy. Regular exercise and healthy eating are key.",
+        isActive: true,
+      },
+      {
+        id: 3,
+        icon: "❤️",
+        title: "Understanding Hypertension",
+        language: "English",
+        content:
+          "Hypertension, or high blood pressure, is often called the 'silent killer'. Regular monitoring and medication adherence are crucial.",
+        isActive: true,
+      },
+      {
+        id: 4,
+        icon: "🫁",
+        title: "Tuberculosis (TB) Awareness",
+        language: "English",
+        content:
+          "Tuberculosis (TB) is a bacterial infection that mainly affects the lungs. Complete your full 6-month treatment course.",
+        isActive: true,
+      },
+    ];
+    localStorage.setItem(STORAGE_KEYS.LESSONS, JSON.stringify(defaultLessons));
+  }
+}
 
 // ============ MESSAGE DISPLAY FUNCTION ============
 function showMessage(message, type) {
@@ -7,18 +186,99 @@ function showMessage(message, type) {
   if (messageBox) {
     messageBox.textContent = message;
     messageBox.className = "message " + type;
-    messageBox.style.display = "block";
+    messageBox.classList.remove("hidden");
 
-    // Scroll to message
-    messageBox.scrollIntoView({ behavior: "smooth", block: "center" });
-
-    // Hide after 3 seconds
     setTimeout(function () {
-      messageBox.style.display = "none";
+      messageBox.classList.add("hidden");
     }, 3000);
   } else {
     alert(message);
   }
+}
+
+// ============ AUTHENTICATION FUNCTIONS ============
+
+function handleLogin(event) {
+  event.preventDefault();
+
+  const phone = document.getElementById("loginPhone").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || "[]");
+  const user = users.find(
+    (u) => u.phone === phone && u.password === password && u.isActive,
+  );
+
+  if (user) {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+    showMessage("✅ Login successful! Redirecting...", "success");
+    setTimeout(function () {
+      window.location.href = "dashboard.html";
+    }, 1000);
+  } else {
+    showMessage("❌ Invalid phone number or password", "error");
+  }
+
+  return false;
+}
+
+function handleRegister(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("regName").value;
+  const phone = document.getElementById("regPhone").value;
+  const password = document.getElementById("regPassword").value;
+  const confirmPassword = document.getElementById("regConfirmPassword").value;
+  const language = document.getElementById("regLanguage").value;
+  const location = document.getElementById("regLocation").value;
+  const role = document.getElementById("regRole").value;
+
+  if (password !== confirmPassword) {
+    showMessage("❌ Passwords do not match!", "error");
+    return false;
+  }
+
+  if (password.length < 6) {
+    showMessage("❌ Password must be at least 6 characters!", "error");
+    return false;
+  }
+
+  const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || "[]");
+
+  if (users.find((u) => u.phone === phone)) {
+    showMessage("❌ Phone number already registered!", "error");
+    return false;
+  }
+
+  const newUser = {
+    id: Date.now(),
+    name: name,
+    phone: phone,
+    password: password,
+    role: role,
+    location: location,
+    language: language,
+    isActive: true,
+    registrationDate: new Date().toISOString().slice(0, 10),
+  };
+
+  users.push(newUser);
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+
+  showMessage("✅ Registration successful! Please login.", "success");
+  document.getElementById("registerForm").reset();
+  showPanel("login");
+
+  return false;
+}
+
+function handleLogout() {
+  localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+  window.location.href = "login.html";
+}
+
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER));
 }
 
 // ============ MODAL FUNCTIONS ============
@@ -42,75 +302,23 @@ function closeModal(modalId) {
   if (modal) modal.style.display = "none";
 }
 
-// Show lesson (demo version)
-function showLesson(lessonId) {
-  window.location.href = "lesson.html?id=" + lessonId;
-}
-
-function showLessonDemo(title) {
-  showMessage(
-    `📚 Lesson: ${title}\n\nIn the full app, you would see the complete health education content here.`,
-    "success",
-  );
-}
-
-function showVolunteerView() {
-  window.location.href = "volunteer.html";
-}
-
-// Show demo modal form (for index.html)
 function showDemoForm() {
   const modal = document.getElementById("demoModal");
   if (modal) modal.style.display = "flex";
 }
 
-// Close demo modal
 function closeDemoModal() {
   const modal = document.getElementById("demoModal");
   if (modal) modal.style.display = "none";
 }
 
-// ============ LOGOUT FUNCTIONS ============
-function logout() {
-  if (confirm("Are you sure you want to logout?")) {
-    sessionStorage.clear();
-    localStorage.clear();
-    window.location.href = "logout.html";
-  }
-}
-
-function demoLogout() {
-  if (confirm("Are you sure you want to logout?")) {
-    sessionStorage.clear();
-    localStorage.clear();
-    window.location.href = "logout.html";
-  }
-}
-
-// ============ DELETE CONFIRMATION ============
-function confirmDelete(message) {
-  return confirm(message);
-}
-
-// ============ MESSAGE HANDLING ============
-function autoHideMessage() {
-  const msgBox = document.getElementById("messageBox");
-  if (msgBox) {
-    setTimeout(function () {
-      msgBox.style.display = "none";
-    }, 3000);
-  }
-}
-
-// ============ TAB SWITCHING (for login page) ============
+// ============ TAB SWITCHING ============
 function showPanel(panel) {
-  // Update tabs
   const tabs = document.querySelectorAll(".tab");
   tabs.forEach(function (tab, index) {
     tab.classList.remove("active");
   });
 
-  // Update panels
   const loginPanel = document.getElementById("loginPanel");
   const registerPanel = document.getElementById("registerPanel");
 
@@ -125,154 +333,413 @@ function showPanel(panel) {
   }
 }
 
-// ============ DEMO LOGIN HANDLER ============
-function handleDemoLogin(event) {
+// ============ DASHBOARD FUNCTIONS ============
+function loadDashboard() {
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Update user info
+  document.getElementById("userName").innerText = user.name;
+  document.getElementById("userLocation").innerText =
+    user.location || "Not set";
+  document.getElementById("userLanguage").innerText = user.language;
+  document.getElementById("userRole").innerText = user.role;
+
+  // Show/hide admin/volunteer buttons
+  if (user.role === "admin") {
+    document.getElementById("adminDashboardLink")?.classList.remove("hidden");
+  }
+  if (user.role === "volunteer") {
+    document
+      .getElementById("volunteerDashboardLink")
+      ?.classList.remove("hidden");
+  }
+
+  loadMedications();
+  loadSymptoms();
+  loadHelpRequests();
+  loadLessons();
+  updateStats();
+}
+
+function loadMedications() {
+  const user = getCurrentUser();
+  const medications = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.MEDICATIONS) || "[]",
+  );
+  const userMeds = medications.filter((m) => m.userId === user.id);
+  const container = document.getElementById("medicationList");
+
+  if (!container) return;
+
+  if (userMeds.length === 0) {
+    container.innerHTML =
+      '<p class="empty-message">No medications yet. Click "Add Medication" to start.</p>';
+    return;
+  }
+
+  container.innerHTML = userMeds
+    .map(
+      (med) => `
+        <div class="medication-item" data-id="${med.id}">
+            <div class="item-header">
+                <strong>💊 ${escapeHtml(med.name)}</strong>
+                <div class="item-actions">
+                    <button onclick="markTaken(${med.id})" class="btn-icon" title="Mark as taken">✅</button>
+                    <button onclick="deleteMedication(${med.id})" class="btn-icon" title="Delete">🗑️</button>
+                </div>
+            </div>
+            <div class="item-details">
+                <div>💊 Dosage: ${escapeHtml(med.dosage)}</div>
+                <div>⏰ Time: ${med.time}</div>
+                ${med.instructions ? `<div>📝 ${escapeHtml(med.instructions)}</div>` : ""}
+                <div class="med-status">${med.taken ? "✅ Taken today" : "⭕ Not taken yet"}</div>
+            </div>
+        </div>
+    `,
+    )
+    .join("");
+}
+
+function addMedication(event) {
   event.preventDefault();
 
-  const phone = document.getElementById("loginPhone").value;
-  const password = document.getElementById("loginPassword").value;
+  const user = getCurrentUser();
+  const name = document.getElementById("medName").value;
+  const dosage = document.getElementById("medDosage").value;
+  const time = document.getElementById("medTime").value;
+  const instructions = document.getElementById("medInstructions").value;
 
-  if (phone && password) {
-    // Determine user role based on phone number (demo logic)
-    let userRole = "patient";
-    let userName = "Demo User";
-    let userLocation = "Soweto, Johannesburg";
+  const medications = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.MEDICATIONS) || "[]",
+  );
 
-    // Demo: specific phone numbers for different roles
-    if (phone === "0834567890") {
-      userRole = "admin";
-      userName = "Admin User";
-      userLocation = "Head Office";
-    } else if (phone === "0723456789") {
-      userRole = "volunteer";
-      userName = "Mary Jones";
-      userLocation = "Khayelitsha, Cape Town";
-    } else if (phone === "0745678901") {
-      userRole = "volunteer";
-      userName = "Sarah Mbeki";
-      userLocation = "Pretoria";
-    } else {
-      userRole = "patient";
-      userName = "Thabo Nkosi";
-      userLocation = "Soweto, Johannesburg";
-    }
+  const newMed = {
+    id: Date.now(),
+    userId: user.id,
+    name: name,
+    dosage: dosage,
+    time: time,
+    instructions: instructions,
+    taken: false,
+    dateAdded: new Date().toISOString().slice(0, 10),
+  };
 
-    // Save user data to session storage
-    const userData = {
-      id: 1,
-      name: userName,
-      phone: phone,
-      role: userRole,
-      location: userLocation,
-      language: "English",
-    };
-    sessionStorage.setItem("demoUser", JSON.stringify(userData));
+  medications.push(newMed);
+  localStorage.setItem(STORAGE_KEYS.MEDICATIONS, JSON.stringify(medications));
 
-    showMessage(
-      "✅ Demo login successful! Redirecting to dashboard...",
-      "success",
+  closeModal("medicationModal");
+  document.getElementById("addMedicationForm").reset();
+  loadMedications();
+  updateStats();
+  showMessage("✅ Medication added successfully!", "success");
+
+  return false;
+}
+
+function markTaken(medId) {
+  const medications = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.MEDICATIONS) || "[]",
+  );
+  const med = medications.find((m) => m.id === medId);
+  if (med) {
+    med.taken = true;
+    localStorage.setItem(STORAGE_KEYS.MEDICATIONS, JSON.stringify(medications));
+    loadMedications();
+    updateStats();
+    showMessage("✅ Medication marked as taken!", "success");
+  }
+}
+
+function deleteMedication(medId) {
+  if (confirm("Delete this medication?")) {
+    let medications = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.MEDICATIONS) || "[]",
     );
-
-    setTimeout(function () {
-      window.location.href = "dashboard.html";
-    }, 1500);
-  } else {
-    showMessage("❌ Please enter phone number and password", "error");
+    medications = medications.filter((m) => m.id !== medId);
+    localStorage.setItem(STORAGE_KEYS.MEDICATIONS, JSON.stringify(medications));
+    loadMedications();
+    updateStats();
+    showMessage("✅ Medication deleted!", "success");
   }
+}
+
+function loadSymptoms() {
+  const user = getCurrentUser();
+  const symptoms = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.SYMPTOMS) || "[]",
+  );
+  const userSymptoms = symptoms.filter((s) => s.userId === user.id).reverse();
+  const container = document.getElementById("symptomList");
+
+  if (!container) return;
+
+  if (userSymptoms.length === 0) {
+    container.innerHTML =
+      '<p class="empty-message">No symptoms logged yet. Click "Log Symptom" to start.</p>';
+    return;
+  }
+
+  const severityMap = {
+    1: "⭐",
+    2: "⭐⭐",
+    3: "⭐⭐⭐",
+    4: "⭐⭐⭐⭐",
+    5: "⭐⭐⭐⭐⭐",
+  };
+  const severityText = {
+    1: "Mild",
+    2: "Moderate",
+    3: "Uncomfortable",
+    4: "Severe",
+    5: "Very Severe",
+  };
+
+  container.innerHTML = userSymptoms
+    .slice(0, 5)
+    .map(
+      (sym) => `
+        <div class="symptom-item" data-id="${sym.id}">
+            <div class="item-header">
+                <strong>🤕 ${escapeHtml(sym.symptomName)}</strong>
+                <button onclick="deleteSymptom(${sym.id})" class="btn-icon" title="Delete">🗑️</button>
+            </div>
+            <div class="item-details">
+                <div>Severity: ${severityMap[sym.severity]} (${severityText[sym.severity]})</div>
+                <div>📅 ${sym.date}</div>
+                ${sym.notes ? `<div>📝 ${escapeHtml(sym.notes)}</div>` : ""}
+            </div>
+        </div>
+    `,
+    )
+    .join("");
+}
+
+function addSymptom(event) {
+  event.preventDefault();
+
+  const user = getCurrentUser();
+  const name = document.getElementById("symptomName").value;
+  const severity = parseInt(document.getElementById("symptomSeverity").value);
+  const notes = document.getElementById("symptomNotes").value;
+
+  const symptoms = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.SYMPTOMS) || "[]",
+  );
+
+  const newSymptom = {
+    id: Date.now(),
+    userId: user.id,
+    symptomName: name,
+    severity: severity,
+    notes: notes,
+    date: new Date().toISOString().slice(0, 10),
+  };
+
+  symptoms.push(newSymptom);
+  localStorage.setItem(STORAGE_KEYS.SYMPTOMS, JSON.stringify(symptoms));
+
+  closeModal("symptomModal");
+  document.getElementById("addSymptomForm").reset();
+  loadSymptoms();
+  updateStats();
+  showMessage("✅ Symptom logged successfully!", "success");
 
   return false;
 }
 
-// ============ DEMO REGISTER HANDLER ============
-function handleDemoRegister(event) {
-  event.preventDefault();
-
-  const name = document.getElementById("regName").value;
-  const phone = document.getElementById("regPhone").value;
-  const password = document.getElementById("regPassword").value;
-  const confirmPassword = document.getElementById("regConfirmPassword").value;
-
-  if (password !== confirmPassword) {
-    showMessage("❌ Passwords do not match!", "error");
-    return false;
+function deleteSymptom(symId) {
+  if (confirm("Delete this symptom record?")) {
+    let symptoms = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.SYMPTOMS) || "[]",
+    );
+    symptoms = symptoms.filter((s) => s.id !== symId);
+    localStorage.setItem(STORAGE_KEYS.SYMPTOMS, JSON.stringify(symptoms));
+    loadSymptoms();
+    updateStats();
+    showMessage("✅ Symptom deleted!", "success");
   }
-
-  if (password.length < 6) {
-    showMessage("❌ Password must be at least 6 characters long!", "error");
-    return false;
-  }
-
-  if (!validatePhone(phone)) {
-    showMessage("❌ Please enter a valid 10-digit phone number!", "error");
-    return false;
-  }
-
-  if (name && phone && password) {
-    showMessage("✅ Demo registration successful! Please login.", "success");
-
-    // Clear form
-    document.getElementById("registerForm").reset();
-
-    // Switch to login tab
-    setTimeout(function () {
-      showPanel("login");
-    }, 1500);
-  } else {
-    showMessage("❌ Please fill in all required fields", "error");
-  }
-
-  return false;
 }
 
-// ============ DEMO FORGOT PASSWORD HANDLER ============
-function handleDemoForgotPassword(event) {
+function loadHelpRequests() {
+  const user = getCurrentUser();
+  const requests = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.HELP_REQUESTS) || "[]",
+  );
+  const userRequests = requests.filter((r) => r.userId === user.id);
+  const container = document.getElementById("helpRequestList");
+
+  if (!container) return;
+
+  if (userRequests.length === 0) {
+    container.innerHTML =
+      '<p class="empty-message">No help requests yet. Click "Request Help" if you need assistance.</p>';
+    return;
+  }
+
+  const typeMap = {
+    medication: "💊 Medication Pickup",
+    clinic: "🚗 Clinic Ride",
+    food: "🍲 Food Parcel",
+    care: "👵 Home Care",
+    other: "📞 Other",
+  };
+
+  container.innerHTML = userRequests
+    .slice(0, 3)
+    .map(
+      (req) => `
+        <div class="help-item">
+            <strong>${typeMap[req.type] || req.type}</strong>
+            <div class="help-status">Status: ${req.status === "pending" ? "🟡 Pending" : req.status === "assigned" ? "🔵 Assigned" : "✅ Completed"}</div>
+            <div class="help-date">📅 ${req.requestDate}</div>
+        </div>
+    `,
+    )
+    .join("");
+}
+
+function addHelpRequest(event) {
   event.preventDefault();
 
-  const phone = document.getElementById("forgotPhone").value;
-  const newPassword = document.getElementById("forgotNewPassword").value;
-  const confirmPassword = document.getElementById(
-    "forgotConfirmPassword",
-  ).value;
+  const user = getCurrentUser();
+  const type = document.getElementById("helpType").value;
+  const location = document.getElementById("helpLocation").value;
+  const details = document.getElementById("helpDetails").value;
+  const urgent = document.getElementById("helpUrgent").checked;
 
-  if (!validatePhone(phone)) {
-    showMessage("❌ Please enter a valid 10-digit phone number!", "error");
-    return false;
-  }
+  const requests = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.HELP_REQUESTS) || "[]",
+  );
 
-  if (newPassword !== confirmPassword) {
-    showMessage("❌ Passwords do not match!", "error");
-    return false;
-  }
+  const newRequest = {
+    id: Date.now(),
+    userId: user.id,
+    patientName: user.name,
+    type: type,
+    location: location,
+    details: details,
+    urgent: urgent,
+    status: "pending",
+    requestDate: new Date().toISOString().slice(0, 10),
+  };
 
-  if (newPassword.length < 6) {
-    showMessage("❌ Password must be at least 6 characters long!", "error");
-    return false;
-  }
+  requests.push(newRequest);
+  localStorage.setItem(STORAGE_KEYS.HELP_REQUESTS, JSON.stringify(requests));
 
+  closeModal("helpModal");
+  document.getElementById("helpRequestForm").reset();
+  loadHelpRequests();
+  updateStats();
   showMessage(
-    "✅ Demo: Password reset successful! Redirecting to login...",
+    "✅ Help request sent! A volunteer will contact you soon.",
     "success",
   );
 
-  document.getElementById("forgotPasswordForm").reset();
-
-  setTimeout(function () {
-    window.location.href = "login.html";
-  }, 2000);
-
   return false;
 }
 
-// ============ DEMO CHANGE PASSWORD HANDLER ============
-function handleDemoChangePassword(event) {
+function loadLessons() {
+  const user = getCurrentUser();
+  const lessons = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.LESSONS) || "[]",
+  );
+  const container = document.getElementById("lessonList");
+
+  if (!container) return;
+
+  const userLessons = lessons.filter((l) => l.isActive);
+
+  if (userLessons.length === 0) {
+    container.innerHTML = '<p class="empty-message">No lessons available.</p>';
+    return;
+  }
+
+  container.innerHTML = userLessons
+    .map(
+      (lesson) => `
+        <div class="lesson-item" onclick="viewLesson(${lesson.id})">
+            <h4>${lesson.icon} ${escapeHtml(lesson.title)}</h4>
+            <p>${escapeHtml(lesson.content.substring(0, 100))}...</p>
+            <span class="read-more">Click to read full lesson →</span>
+        </div>
+    `,
+    )
+    .join("");
+}
+
+function viewLesson(lessonId) {
+  window.location.href = `lesson.html?id=${lessonId}`;
+}
+
+function updateStats() {
+  const user = getCurrentUser();
+  const medications = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.MEDICATIONS) || "[]",
+  );
+  const symptoms = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.SYMPTOMS) || "[]",
+  );
+  const requests = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.HELP_REQUESTS) || "[]",
+  );
+
+  const userMeds = medications.filter((m) => m.userId === user.id);
+  const userSymptoms = symptoms.filter((s) => s.userId === user.id);
+  const userRequests = requests.filter((r) => r.userId === user.id);
+
+  const takenCount = userMeds.filter((m) => m.taken).length;
+  const adherenceRate =
+    userMeds.length > 0 ? Math.round((takenCount / userMeds.length) * 100) : 0;
+
+  document.getElementById("medCount").innerText = userMeds.length;
+  document.getElementById("symCount").innerText = userSymptoms.length;
+  document.getElementById("helpCount").innerText = userRequests.length;
+  document.getElementById("adherenceRate").innerText = adherenceRate + "%";
+
+  const fill = document.getElementById("adherenceFill");
+  if (fill) fill.style.width = adherenceRate + "%";
+}
+
+function loadLessonPage() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const lessonId = urlParams.get("id");
+  const lessons = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.LESSONS) || "[]",
+  );
+  const lesson = lessons.find((l) => l.id == lessonId);
+
+  if (lesson) {
+    document.getElementById("lessonIcon").innerText = lesson.icon;
+    document.getElementById("lessonTitle").innerText = lesson.title;
+    document.getElementById("lessonLanguage").innerHTML =
+      `🗣️ Language: ${lesson.language}`;
+    document.getElementById("lessonContent").innerHTML = lesson.content.replace(
+      /\n/g,
+      "<br>",
+    );
+    document.title = `${lesson.title} - Babayaga Care`;
+  } else {
+    document.getElementById("lessonTitle").innerText = "Lesson Not Found";
+    document.getElementById("lessonContent").innerHTML =
+      "<p>The requested lesson could not be found.</p>";
+  }
+}
+
+// ============ CHANGE PASSWORD ============
+function handleChangePassword(event) {
   event.preventDefault();
 
+  const user = getCurrentUser();
   const oldPassword = document.getElementById("oldPassword").value;
   const newPassword = document.getElementById("newPassword").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
 
-  if (!oldPassword) {
-    showMessage("❌ Please enter your current password", "error");
+  if (user.password !== oldPassword) {
+    showMessage("❌ Current password is incorrect!", "error");
     return false;
   }
 
@@ -286,222 +753,63 @@ function handleDemoChangePassword(event) {
     return false;
   }
 
-  showMessage(
-    "✅ Password changed successfully! Redirecting to login...",
-    "success",
+  const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || "[]");
+  const userIndex = users.findIndex((u) => u.id === user.id);
+  users[userIndex].password = newPassword;
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+  localStorage.setItem(
+    STORAGE_KEYS.CURRENT_USER,
+    JSON.stringify(users[userIndex]),
   );
 
+  showMessage("✅ Password changed successfully!", "success");
   document.getElementById("changePasswordForm").reset();
 
-  setTimeout(function () {
+  return false;
+}
+
+function handleForgotPassword(event) {
+  event.preventDefault();
+
+  const phone = document.getElementById("forgotPhone").value;
+  const newPassword = document.getElementById("forgotNewPassword").value;
+  const confirmPassword = document.getElementById(
+    "forgotConfirmPassword",
+  ).value;
+
+  if (newPassword !== confirmPassword) {
+    showMessage("❌ Passwords do not match!", "error");
+    return false;
+  }
+
+  if (newPassword.length < 6) {
+    showMessage("❌ Password must be at least 6 characters!", "error");
+    return false;
+  }
+
+  const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || "[]");
+  const user = users.find((u) => u.phone === phone);
+
+  if (!user) {
+    showMessage("❌ Phone number not found!", "error");
+    return false;
+  }
+
+  user.password = newPassword;
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+
+  showMessage(
+    "✅ Password reset successful! Redirecting to login...",
+    "success",
+  );
+  setTimeout(() => {
     window.location.href = "login.html";
   }, 2000);
 
   return false;
 }
 
-// ============ PHONE NUMBER VALIDATION ============
-function validatePhone(phone) {
-  const phoneRegex = /^[0-9]{10}$/;
-  return phoneRegex.test(phone);
-}
-
-// ============ DASHBOARD FUNCTIONS ============
-
-// Medication functions
-function markTaken(button) {
-  const medItem = button.closest(".medication-item");
-  const statusDiv = medItem.querySelector(".med-status");
-  statusDiv.innerHTML = "✅ Taken today";
-  statusDiv.style.color = "green";
-  button.disabled = true;
-  updateAdherenceRate();
-  showMessage("✅ Medication marked as taken!", "success");
-}
-
-function updateAdherenceRate() {
-  const medItems = document.querySelectorAll(
-    "#medicationList .medication-item",
-  );
-  let takenCount = 0;
-  medItems.forEach(function (item) {
-    const status = item.querySelector(".med-status");
-    if (status && status.innerHTML.includes("✅ Taken today")) {
-      takenCount++;
-    }
-  });
-  const totalCount = medItems.length;
-  const adherencePercent =
-    totalCount > 0 ? Math.round((takenCount / totalCount) * 100) : 0;
-
-  const adherenceRateElem = document.getElementById("adherenceRate");
-  const adherenceFillElem = document.getElementById("adherenceFill");
-
-  if (adherenceRateElem) adherenceRateElem.innerText = adherencePercent + "%";
-  if (adherenceFillElem) adherenceFillElem.style.width = adherencePercent + "%";
-}
-
-function deleteMedication(button) {
-  if (confirm("Delete this medication?")) {
-    const medItem = button.closest(".medication-item");
-    medItem.remove();
-    updateMedicationCount();
-    updateAdherenceRate();
-    showMessage("✅ Medication deleted!", "success");
-  }
-}
-
-function updateMedicationCount() {
-  const count = document.querySelectorAll(
-    "#medicationList .medication-item",
-  ).length;
-  const medCountElem = document.getElementById("medCount");
-  if (medCountElem) medCountElem.innerText = count;
-}
-
-function addMedicationDemo(event) {
-  event.preventDefault();
-
-  const name = document.getElementById("medName").value;
-  const dosage = document.getElementById("medDosage").value;
-  const time = document.getElementById("medTime").value;
-  const instructions = document.getElementById("medInstructions").value;
-
-  const medicationList = document.getElementById("medicationList");
-
-  const newMed = document.createElement("div");
-  newMed.className = "medication-item";
-  newMed.innerHTML = `
-        <div class="item-header">
-            <strong>💊 ${escapeHtml(name)}</strong>
-            <div class="item-actions">
-                <button onclick="markTaken(this)" class="btn-icon" title="Mark as taken">✅</button>
-                <button onclick="deleteMedication(this)" class="btn-icon" title="Delete">🗑️</button>
-            </div>
-        </div>
-        <div class="item-details">
-            <div>💊 Dosage: ${escapeHtml(dosage)}</div>
-            <div>⏰ Time: ${escapeHtml(time)}</div>
-            ${instructions ? `<div>📝 ${escapeHtml(instructions)}</div>` : ""}
-            <div class="med-status">⭕ Not taken yet</div>
-        </div>
-    `;
-
-  medicationList.appendChild(newMed);
-  updateMedicationCount();
-  updateAdherenceRate();
-  closeModal("medicationModal");
-  document.getElementById("addMedicationForm").reset();
-  showMessage("✅ Medication added successfully!", "success");
-
-  return false;
-}
-
-// Symptom functions
-function deleteSymptom(button) {
-  if (confirm("Delete this symptom record?")) {
-    const symptomItem = button.closest(".symptom-item");
-    symptomItem.remove();
-    updateSymptomCount();
-    showMessage("✅ Symptom deleted!", "success");
-  }
-}
-
-function updateSymptomCount() {
-  const count = document.querySelectorAll("#symptomList .symptom-item").length;
-  const symCountElem = document.getElementById("symCount");
-  if (symCountElem) symCountElem.innerText = count;
-}
-
-function addSymptomDemo(event) {
-  event.preventDefault();
-
-  const name = document.getElementById("symptomName").value;
-  const severity = document.getElementById("symptomSeverity").value;
-  const notes = document.getElementById("symptomNotes").value;
-
-  const severityMap = {
-    1: "⭐ (Mild)",
-    2: "⭐⭐ (Moderate)",
-    3: "⭐⭐⭐ (Uncomfortable)",
-    4: "⭐⭐⭐⭐ (Severe)",
-    5: "⭐⭐⭐⭐⭐ (Very Severe)",
-  };
-
-  const symptomList = document.getElementById("symptomList");
-  const today = new Date().toISOString().slice(0, 10);
-
-  const newSymptom = document.createElement("div");
-  newSymptom.className = "symptom-item";
-  newSymptom.innerHTML = `
-        <div class="item-header">
-            <strong>🤕 ${escapeHtml(name)}</strong>
-            <button onclick="deleteSymptom(this)" class="btn-icon" title="Delete">🗑️</button>
-        </div>
-        <div class="item-details">
-            <div>Severity: ${severityMap[severity]}</div>
-            <div>📅 ${today}</div>
-            ${notes ? `<div>📝 ${escapeHtml(notes)}</div>` : ""}
-        </div>
-    `;
-
-  symptomList.appendChild(newSymptom);
-  updateSymptomCount();
-  closeModal("symptomModal");
-  document.getElementById("addSymptomForm").reset();
-  showMessage("✅ Symptom logged successfully!", "success");
-
-  return false;
-}
-
-// Help request functions
-function addHelpRequestDemo(event) {
-  event.preventDefault();
-
-  const type = document.getElementById("helpType").value;
-  const location = document.getElementById("helpLocation").value;
-  const details = document.getElementById("helpDetails").value;
-  const urgent = document.getElementById("helpUrgent").checked;
-
-  const typeMap = {
-    medication: "💊 Medication Pickup",
-    clinic: "🚗 Clinic/Hospital Ride",
-    food: "🍲 Food Parcel",
-    care: "👵 Home Care Check-in",
-    other: "📞 Other",
-  };
-
-  const helpList = document.getElementById("helpRequestList");
-  const today = new Date().toISOString().slice(0, 10);
-  const urgentText = urgent ? " (Urgent)" : "";
-
-  const newRequest = document.createElement("div");
-  newRequest.className = "help-item";
-  newRequest.innerHTML = `
-        <strong>${typeMap[type]}${urgentText}</strong>
-        <div class="help-status">Status: Pending</div>
-        <div class="help-date">📅 ${today}</div>
-    `;
-
-  helpList.appendChild(newRequest);
-  updateHelpCount();
-  closeModal("helpModal");
-  document.getElementById("helpRequestForm").reset();
-  showMessage(
-    "✅ Help request sent! A volunteer will contact you soon.",
-    "success",
-  );
-
-  return false;
-}
-
-function updateHelpCount() {
-  const count = document.querySelectorAll("#helpRequestList .help-item").length;
-  const helpCountElem = document.getElementById("helpCount");
-  if (helpCountElem) helpCountElem.innerText = count;
-}
-
-// ============ ESCAPE HTML TO PREVENT XSS ============
+// ============ ESCAPE HTML ============
 function escapeHtml(str) {
   if (!str) return "";
   return str
@@ -512,656 +820,21 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;");
 }
 
-// ============ VOLUNTEER DASHBOARD FUNCTIONS ============
-
-let openRequestsData = [
-  {
-    id: 101,
-    type: "medication",
-    typeIcon: "💊",
-    typeText: "Medication Pickup",
-    location: "Soweto, Johannesburg",
-    details: "Need help picking up ARV medication from clinic.",
-    requestDate: "2024-06-05",
-    urgent: true,
-    status: "open",
-  },
-  {
-    id: 102,
-    type: "clinic",
-    typeIcon: "🚗",
-    typeText: "Clinic/Hospital Ride",
-    location: "Khayelitsha, Cape Town",
-    details: "Need a ride to the clinic for my monthly check-up.",
-    requestDate: "2024-06-05",
-    urgent: false,
-    status: "open",
-  },
-  {
-    id: 103,
-    type: "food",
-    typeIcon: "🍲",
-    typeText: "Food Parcel",
-    location: "Durban",
-    details: "Need food parcel for a family of 4.",
-    requestDate: "2024-06-04",
-    urgent: true,
-    status: "open",
-  },
-];
-
-let myRequestsData = [
-  {
-    id: 201,
-    type: "medication",
-    typeIcon: "💊",
-    typeText: "Medication Pickup",
-    location: "Soweto, Johannesburg",
-    details: "Help picking up medication from clinic.",
-    requestDate: "2024-06-02",
-    urgent: false,
-    status: "assigned",
-  },
-];
-
-function renderOpenRequests() {
-  const container = document.getElementById("openRequestsContainer");
-  if (!container) return;
-
-  if (openRequestsData.length === 0) {
-    container.innerHTML = "<p>No open requests at the moment.</p>";
-    return;
-  }
-
-  container.innerHTML = openRequestsData
-    .map(
-      (req) => `
-        <div class="request-card ${req.urgent ? "urgent" : ""}">
-            <div class="request-header">
-                <div class="request-info">
-                    <strong>${req.typeIcon} ${req.typeText}</strong>
-                    ${req.urgent ? '<span class="badge badge-urgent">🚨 URGENT</span>' : ""}
-                    <span class="badge badge-open">open</span>
-                </div>
-                <button onclick="acceptRequest(${req.id})" class="btn btn-primary btn-small">Accept</button>
-            </div>
-            <div class="request-details">
-                <div>📍 ${escapeHtml(req.location)}</div>
-                <div>📝 ${escapeHtml(req.details)}</div>
-                <div>📅 ${req.requestDate}</div>
-            </div>
-        </div>
-    `,
-    )
-    .join("");
-}
-
-function renderMyRequests() {
-  const container = document.getElementById("myRequestsContainer");
-  if (!container) return;
-
-  if (myRequestsData.length === 0) {
-    container.innerHTML = "<p>You haven't accepted any requests yet.</p>";
-    return;
-  }
-
-  container.innerHTML = myRequestsData
-    .map(
-      (req) => `
-        <div class="request-card">
-            <div class="request-header">
-                <div class="request-info">
-                    <strong>${req.typeIcon} ${req.typeText}</strong>
-                    <span class="badge badge-assigned">${req.status}</span>
-                </div>
-                ${req.status === "assigned" ? `<button onclick="completeRequest(${req.id})" class="btn btn-success btn-small">Mark Complete</button>` : ""}
-            </div>
-            <div class="request-details">
-                <div>📍 ${escapeHtml(req.location)}</div>
-                <div>📝 ${escapeHtml(req.details)}</div>
-                <div>📅 ${req.requestDate}</div>
-            </div>
-        </div>
-    `,
-    )
-    .join("");
-}
-
-function acceptRequest(requestId) {
-  const request = openRequestsData.find((r) => r.id === requestId);
-  if (
-    request &&
-    confirm(
-      `Accept this request?\n\n${request.typeIcon} ${request.typeText}\n📍 ${request.location}`,
-    )
-  ) {
-    openRequestsData = openRequestsData.filter((r) => r.id !== requestId);
-    myRequestsData.push({ ...request, status: "assigned" });
-    renderOpenRequests();
-    renderMyRequests();
-    showMessage(
-      `✅ You have accepted the ${request.typeText} request!`,
-      "success",
-    );
-  }
-}
-
-function completeRequest(requestId) {
-  const request = myRequestsData.find((r) => r.id === requestId);
-  if (request && confirm(`Mark this request as completed?`)) {
-    request.status = "completed";
-    renderMyRequests();
-    showMessage(
-      `✅ Request marked as completed! Thank you for your help! 🎉`,
-      "success",
-    );
-  }
-}
-
-// ============ LESSON FUNCTIONS ============
-
-const lessonsDatabase = {
-  1: {
-    id: 1,
-    icon: "🩸",
-    title: "Understanding HIV/AIDS",
-    language: "English",
-    content:
-      "HIV (Human Immunodeficiency Virus) is a virus that attacks the immune system...",
-  },
-  2: {
-    id: 2,
-    icon: "🍬",
-    title: "Diabetes Management",
-    language: "English",
-    content:
-      "Diabetes is a chronic condition that affects how your body turns food into energy...",
-  },
-  3: {
-    id: 3,
-    icon: "❤️",
-    title: "Understanding Hypertension",
-    language: "English",
-    content:
-      "Hypertension, or high blood pressure, is often called the 'silent killer'...",
-  },
-  4: {
-    id: 4,
-    icon: "🫁",
-    title: "Tuberculosis (TB) Awareness",
-    language: "English",
-    content:
-      "Tuberculosis (TB) is a bacterial infection that mainly affects the lungs...",
-  },
-};
-
-function getLessonIdFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("id");
-}
-
-function loadLesson() {
-  const lessonId = getLessonIdFromUrl();
-  if (!lessonId) {
-    window.location.href = "dashboard.html";
-    return;
-  }
-
-  const lesson = lessonsDatabase[lessonId];
-  if (!lesson) {
-    document.getElementById("lessonTitle").innerText = "Lesson Not Found";
-    document.getElementById("lessonContent").innerHTML =
-      "<p>The requested lesson could not be found.</p>";
-    return;
-  }
-
-  document.getElementById("lessonIcon").innerText = lesson.icon;
-  document.getElementById("lessonTitle").innerText = lesson.title;
-  document.getElementById("lessonLanguage").innerHTML =
-    `🗣️ Language: ${lesson.language}`;
-  document.getElementById("lessonContent").innerHTML = lesson.content.replace(
-    /\n/g,
-    "<br>",
-  );
-  document.title = `${lesson.title} - Babayaga Care`;
-}
-
-// ============ ADMIN FUNCTIONS ============
-
-let usersData = [
-  {
-    id: 1,
-    name: "Admin User",
-    phone: "0834567890",
-    location: "Head Office",
-    role: "admin",
-    isActive: true,
-    registrationDate: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "Thabo Nkosi",
-    phone: "0712345678",
-    location: "Soweto",
-    role: "patient",
-    isActive: true,
-    registrationDate: "2024-02-20",
-  },
-  {
-    id: 3,
-    name: "Mary Jones",
-    phone: "0723456789",
-    location: "Khayelitsha",
-    role: "volunteer",
-    isActive: true,
-    registrationDate: "2024-03-10",
-  },
-];
-
-function renderUsersTable() {
-  const tbody = document.getElementById("usersTableBody");
-  if (!tbody) return;
-  if (usersData.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8">No users found</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = usersData
-    .map(
-      (user) => `
-        <tr>
-            <td>${user.id}</td>
-            <td>${escapeHtml(user.name)}</td>
-            <td>${user.phone}</td>
-            <td>${user.location || "Not set"}</td>
-            <td><span class="role-badge role-${user.role}">${user.role === "admin" ? "👑 Admin" : user.role === "volunteer" ? "🤝 Volunteer" : "👤 Patient"}</span></td>
-            <td class="${user.isActive ? "status-active" : "status-inactive"}">${user.isActive ? "🟢 Active" : "🔴 Inactive"}</td>
-            <td>${user.registrationDate}</td>
-            <td class="action-buttons">
-                ${user.role !== "admin" ? `<button onclick="makeAdmin(${user.id})" class="action-btn action-btn-success">👑 Make Admin</button>` : user.id !== 1 ? `<button onclick="removeAdmin(${user.id})" class="action-btn action-btn-warning">⬇️ Remove</button>` : '<span class="note-text">(Yourself)</span>'}
-                <button onclick="resetUserPassword(${user.id})" class="action-btn action-btn-primary">🔐 Reset</button>
-                ${user.role !== "admin" ? `<button onclick="toggleUserStatus(${user.id})" class="action-btn action-btn-danger">${user.isActive ? "🔴 Deactivate" : "🟢 Activate"}</button>` : ""}
-            </td>
-        </tr>
-    `,
-    )
-    .join("");
-}
-
-function makeAdmin(userId) {
-  const user = usersData.find((u) => u.id === userId);
-  if (user && confirm(`Make ${user.name} an admin?`)) {
-    user.role = "admin";
-    renderUsersTable();
-    showMessage(`✅ ${user.name} has been promoted to Admin!`, "success");
-  }
-}
-
-function removeAdmin(userId) {
-  const user = usersData.find((u) => u.id === userId);
-  if (
-    user &&
-    user.id !== 1 &&
-    confirm(`Remove admin privileges from ${user.name}?`)
-  ) {
-    user.role = "patient";
-    renderUsersTable();
-    showMessage(`✅ Admin privileges removed from ${user.name}.`, "success");
-  } else if (user && user.id === 1) {
-    showMessage("❌ You cannot remove your own admin privileges!", "error");
-  }
-}
-
-function toggleUserStatus(userId) {
-  const user = usersData.find((u) => u.id === userId);
-  if (
-    user &&
-    confirm(`${user.isActive ? "Deactivate" : "Activate"} user "${user.name}"?`)
-  ) {
-    user.isActive = !user.isActive;
-    renderUsersTable();
-    showMessage(
-      `✅ User ${user.name} has been ${user.isActive ? "activated" : "deactivated"}!`,
-      "success",
-    );
-  }
-}
-
-function resetUserPassword(userId) {
-  const user = usersData.find((u) => u.id === userId);
-  if (user && confirm(`Reset password for ${user.name}?`)) {
-    showMessage(
-      `✅ Password reset for ${user.name}. Temporary password sent to ${user.phone}.`,
-      "success",
-    );
-  }
-}
-
-// ============ HELP REQUESTS DATA ============
-let helpRequestsData = [
-  {
-    id: 101,
-    patientName: "Thabo Nkosi",
-    type: "medication",
-    location: "Soweto",
-    status: "open",
-    urgent: true,
-    requestDate: "2024-06-05",
-  },
-  {
-    id: 102,
-    patientName: "Mary Jones",
-    type: "clinic",
-    location: "Khayelitsha",
-    status: "assigned",
-    urgent: false,
-    requestDate: "2024-06-04",
-  },
-];
-
-function renderHelpRequestsTable() {
-  const tbody = document.getElementById("requestsTableBody");
-  if (!tbody) return;
-  if (helpRequestsData.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8">No help requests found</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = helpRequestsData
-    .map(
-      (req) => `
-        <tr class="${req.urgent && req.status === "open" ? "urgent-row" : ""}">
-            <td>${req.id}</td>
-            <td>${escapeHtml(req.patientName)}</td>
-            <td>${req.type === "medication" ? "💊 Medication" : "🚗 Ride"}</td>
-            <td>${escapeHtml(req.location)}</td>
-            <td><span class="status-badge status-${req.status}">${req.status}</span></td>
-            <td>${req.urgent ? "🚨 Yes" : "No"}</td>
-            <td>${req.requestDate}</td>
-            <td class="action-buttons">
-                ${req.status === "open" ? `<button onclick="assignRequest(${req.id})" class="btn-small btn-assign">Assign</button>` : ""}
-                <button onclick="viewRequestDetails(${req.id})" class="btn-small btn-view">View</button>
-            </td>
-        </tr>
-    `,
-    )
-    .join("");
-}
-
-function assignRequest(requestId) {
-  const request = helpRequestsData.find((r) => r.id === requestId);
-  if (request && confirm(`Assign request #${requestId} to a volunteer?`)) {
-    request.status = "assigned";
-    renderHelpRequestsTable();
-    showMessage(`✅ Request #${requestId} has been assigned.`, "success");
-  }
-}
-
-function viewRequestDetails(requestId) {
-  const request = helpRequestsData.find((r) => r.id === requestId);
-  if (request)
-    alert(
-      `📋 REQUEST DETAILS\n\nID: ${request.id}\nPatient: ${request.patientName}\nType: ${request.type}\nLocation: ${request.location}\nStatus: ${request.status}\nUrgent: ${request.urgent ? "Yes" : "No"}\nDate: ${request.requestDate}`,
-    );
-}
-
-// ============ LESSONS MANAGEMENT ============
-let lessonsData = [
-  {
-    id: 1,
-    icon: "🩸",
-    title: "Understanding HIV/AIDS",
-    language: "English",
-    isActive: true,
-    shortContent: "HIV is a virus that attacks the immune system...",
-  },
-  {
-    id: 2,
-    icon: "🍬",
-    title: "Diabetes Management",
-    language: "English",
-    isActive: true,
-    shortContent: "Tips for managing blood sugar...",
-  },
-];
-
-function renderLessonsTable() {
-  const tbody = document.getElementById("lessonsTableBody");
-  if (!tbody) return;
-  if (lessonsData.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7">No lessons found</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = lessonsData
-    .map(
-      (lesson) => `
-        <tr>
-            <td>${lesson.id}</td>
-            <td class="lesson-icon-cell">${lesson.icon}</td>
-            <td>${escapeHtml(lesson.title)}</td>
-            <td>${lesson.language}</td>
-            <td class="lesson-content-preview">${escapeHtml(lesson.shortContent)}</td>
-            <td class="${lesson.isActive ? "status-active" : "status-inactive"}">${lesson.isActive ? "🟢 Active" : "🔴 Inactive"}</td>
-            <td class="action-buttons">
-                <button onclick="editLesson(${lesson.id})" class="action-btn action-btn-primary">✏️ Edit</button>
-                <button onclick="toggleLessonStatus(${lesson.id})" class="action-btn action-btn-warning">${lesson.isActive ? "🔴 Deactivate" : "🟢 Activate"}</button>
-                <button onclick="deleteLesson(${lesson.id})" class="action-btn action-btn-danger">🗑️ Delete</button>
-            </td>
-        </tr>
-    `,
-    )
-    .join("");
-}
-
-function editLesson(id) {
-  showMessage(
-    `✏️ Edit lesson ${id} - In full app, you would edit here.`,
-    "success",
-  );
-}
-
-function toggleLessonStatus(id) {
-  const lesson = lessonsData.find((l) => l.id === id);
-  if (lesson) {
-    lesson.isActive = !lesson.isActive;
-    renderLessonsTable();
-    showMessage(
-      `Lesson ${lesson.isActive ? "activated" : "deactivated"}!`,
-      "success",
-    );
-  }
-}
-
-function deleteLesson(id) {
-  if (confirm("Delete this lesson?")) {
-    lessonsData = lessonsData.filter((l) => l.id !== id);
-    renderLessonsTable();
-    showMessage("Lesson deleted!", "success");
-  }
-}
-
-// ============ FILTER REQUESTS FUNCTION ============
-function filterRequests(status) {
-  // Remove active class from all filter buttons
-  const buttons = document.querySelectorAll(".filter-btn");
-  buttons.forEach((btn) => btn.classList.remove("active"));
-
-  // Add active class to clicked button
-  const activeButton = document.getElementById(
-    `filter${status.charAt(0).toUpperCase() + status.slice(1)}`,
-  );
-  if (activeButton) activeButton.classList.add("active");
-
-  // Filter the data
-  let filteredData = [];
-  if (status === "all") {
-    filteredData = helpRequestsData;
-  } else if (status === "urgent") {
-    filteredData = helpRequestsData.filter((req) => req.urgent === true);
-  } else {
-    filteredData = helpRequestsData.filter((req) => req.status === status);
-  }
-
-  // Re-render table with filtered data
-  const tbody = document.getElementById("requestsTableBody");
-  if (!tbody) return;
-
-  if (filteredData.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8">No help requests found</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = filteredData
-    .map(
-      (req) => `
-        <tr class="${req.urgent && req.status === "open" ? "urgent-row" : ""}">
-            <td>${req.id}</td>
-            <td>${escapeHtml(req.patientName)}</td>
-            <td>${req.type === "medication" ? "💊 Medication" : "🚗 Ride"}</td>
-            <td>${escapeHtml(req.location)}</td>
-            <td><span class="status-badge status-${req.status}">${req.status}</span></td>
-            <td>${req.urgent ? "🚨 Yes" : "No"}</td>
-            <td>${req.requestDate}</td>
-            <td class="action-buttons">
-                ${req.status === "open" ? `<button onclick="assignRequest(${req.id})" class="btn-small btn-assign">Assign</button>` : ""}
-                <button onclick="viewRequestDetails(${req.id})" class="btn-small btn-view">View</button>
-            </td>
-        </tr>
-    `,
-    )
-    .join("");
-}
-
-// ============ SAVE LESSON FUNCTION ============
-function saveLesson(event) {
-  event.preventDefault();
-
-  const action = document.getElementById("formAction").value;
-  const lessonId = document.getElementById("lessonId").value;
-  const lessonKey = document.getElementById("lessonKey").value;
-  const title = document.getElementById("lessonTitle").value;
-  const language = document.getElementById("lessonLanguage").value;
-  const content = document.getElementById("lessonContent").value;
-
-  if (action === "add") {
-    // Add new lesson
-    const newId = lessonsData.length + 1;
-    const newLesson = {
-      id: newId,
-      icon:
-        lessonKey === "hiv"
-          ? "🩸"
-          : lessonKey === "diabetes"
-            ? "🍬"
-            : lessonKey === "hypertension"
-              ? "❤️"
-              : lessonKey === "tb"
-                ? "🫁"
-                : "📖",
-      title: title,
-      language: language,
-      isActive: true,
-      shortContent: content.substring(0, 100) + "...",
-    };
-    lessonsData.push(newLesson);
-    showMessage("✅ Lesson added successfully!", "success");
-  } else if (action === "update") {
-    // Update existing lesson
-    const lesson = lessonsData.find((l) => l.id == lessonId);
-    if (lesson) {
-      lesson.title = title;
-      lesson.language = language;
-      lesson.shortContent = content.substring(0, 100) + "...";
-      showMessage("✅ Lesson updated successfully!", "success");
-    }
-  }
-
-  // Reset form and cancel edit
-  document.getElementById("lessonFormElement").reset();
-  cancelEdit();
-  renderLessonsTable();
-
-  return false;
-}
-
-// ============ CANCEL EDIT FUNCTION ============
-function cancelEdit() {
-  document.getElementById("formAction").value = "add";
-  document.getElementById("lessonId").value = "";
-  document.getElementById("formTitle").innerHTML = "➕ Add New Lesson";
-  document.getElementById("submitBtn").innerHTML = "Add Lesson";
-  document.getElementById("cancelBtn").classList.add("hidden");
-  document.getElementById("lessonFormElement").reset();
-}
-
-// ============ SELECT ADMIN USER FUNCTION ============
-function selectAdminUser(userId, userName) {
-  const selectedUserId = document.getElementById("selectedUserId");
-  const selectedUserInfo = document.getElementById("selectedUserInfo");
-  const selectedUserName = document.getElementById("selectedUserName");
-
-  if (selectedUserId) selectedUserId.value = userId;
-  if (selectedUserName) selectedUserName.innerHTML = userName;
-  if (selectedUserInfo) selectedUserInfo.classList.remove("hidden");
-}
-
-// ============ HANDLE ADMIN RESET PASSWORD ============
-function handleAdminResetPassword(event) {
-  event.preventDefault();
-
-  const userId = document.getElementById("selectedUserId").value;
-  const newPassword = document.getElementById("adminNewPassword").value;
-  const confirmPassword = document.getElementById("adminConfirmPassword").value;
-
-  if (!userId) {
-    showMessage("❌ Please select a user first!", "error");
-    return false;
-  }
-
-  if (newPassword !== confirmPassword) {
-    showMessage("❌ Passwords do not match!", "error");
-    return false;
-  }
-
-  if (newPassword.length < 6) {
-    showMessage("❌ Password must be at least 6 characters long!", "error");
-    return false;
-  }
-
-  const user = usersData.find((u) => u.id == userId);
-  if (user) {
-    showMessage(
-      `✅ Password reset for ${user.name}. New temporary password: ${newPassword}`,
-      "success",
-    );
-    document.getElementById("resetPasswordForm").reset();
-    document.getElementById("selectedUserInfo").classList.add("hidden");
-    document.getElementById("selectedUserId").value = "";
-  } else {
-    showMessage("❌ User not found!", "error");
-  }
-
-  return false;
-}
-
 // ============ INITIALIZATION ============
 document.addEventListener("DOMContentLoaded", function () {
-  autoHideMessage();
+  initializeData();
 
-  // Initialize page-specific functions
-  if (document.getElementById("openRequestsContainer")) {
-    renderOpenRequests();
-    renderMyRequests();
+  // Page-specific initialization
+  if (document.getElementById("loginForm")) {
+    // Login page - nothing extra needed
   }
-  if (document.getElementById("usersTableBody")) {
-    renderUsersTable();
+
+  if (document.getElementById("userName")) {
+    loadDashboard();
   }
-  if (document.getElementById("requestsTableBody")) {
-    renderHelpRequestsTable();
-  }
-  if (document.getElementById("lessonsTableBody")) {
-    renderLessonsTable();
+
+  if (document.getElementById("lessonContent")) {
+    loadLessonPage();
   }
 
   // Modal close on outside click
@@ -1177,23 +850,4 @@ document.addEventListener("DOMContentLoaded", function () {
       if (event.target === modal) modal.style.display = "none";
     });
   };
-
-  // Set default tab on login page
-  if (
-    document.querySelector(".tab") &&
-    !document.querySelector(".tab.active")
-  ) {
-    const firstTab = document.querySelector(".tab");
-    if (firstTab) firstTab.classList.add("active");
-    const loginPanel = document.getElementById("loginPanel");
-    if (loginPanel) loginPanel.classList.add("active");
-  }
-
-  // Load lesson if on lesson page
-  if (document.getElementById("lessonContent")) loadLesson();
-
-  // Update adherence rate on dashboard
-  if (document.getElementById("adherenceFill")) {
-    updateAdherenceRate();
-  }
 });
