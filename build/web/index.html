@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Babayaga Care - Health & Community for South Africa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧙‍♀️ Babayaga Care</h1>
+            <p>Your health. Your community. Your future.</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">💊</div>
+                <h3>Health Tracking</h3>
+                <p>Medication reminders, symptom logs, and treatment history</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📚</div>
+                <h3>Health Education</h3>
+                <p>Simple lessons in English, isiZulu, and Sesotho</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🤝</div>
+                <h3>Community Support</h3>
+                <p>Connect with volunteers and local support groups</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📱</div>
+                <h3>Works Offline</h3>
+                <p>Low-data mode for townships and rural areas</p>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="window.location.href='login.jsp'">Get Started</button>
+            <button class="btn btn-secondary" onclick="showDemoForm()">See Demo</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-number">1000+</span>
+                <span class="stat-label">Active Users</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">85%</span>
+                <span class="stat-label">Medication Adherence</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Communities</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎬 Babayaga Care Demo</h3>
+                <span class="close" onclick="closeDemoModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="demo-feature">
+                    <div class="demo-icon">💊</div>
+                    <div class="demo-text">
+                        <h4>Medication Management</h4>
+                        <p>Add medications, set reminders, and track when you've taken them</p>
+                    </div>
+                </div>
+                <div class="demo-feature">
+                    <div class="demo-icon">📝</div>
+                    <div class="demo-text">
+                        <h4>Symptom Tracking</h4>
+                        <p>Log daily symptoms with severity levels to share with your doctor</p>
+                    </div>
+                </div>
+                <div class="demo-feature">
+                    <div class="demo-icon">📚</div>
+                    <div class="demo-text">
+                        <h4>Health Education</h4>
+                        <p>Learn about HIV, Diabetes, TB, and Hypertension in your language</p>
+                    </div>
+                </div>
+                <div class="demo-feature">
+                    <div class="demo-icon">🤝</div>
+                    <div class="demo-text">
+                        <h4>Community Support</h4>
+                        <p>Request help from volunteers for medication pickup or clinic rides</p>
+                    </div>
+                </div>
+                <div class="demo-feature">
+                    <div class="demo-icon">📱</div>
+                    <div class="demo-text">
+                        <h4>Offline Mode</h4>
+                        <p>Works without internet - perfect for rural areas and townships</p>
+                    </div>
+                </div>
+                <div class="demo-feature">
+                    <div class="demo-icon">🗣️</div>
+                    <div class="demo-text">
+                        <h4>Multiple Languages</h4>
+                        <p>Available in English, isiZulu, Sesotho, Afrikaans, and isiXhosa</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary demo-try-btn" onclick="closeDemoModal(); window.location.href='login.jsp'">
+                    Try It Free Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

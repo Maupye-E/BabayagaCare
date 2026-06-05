@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/GenericDAO.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/admin_help_requests.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/impl/SymptomDAOImpl.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/entity/HelpRequest.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/logout.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/reset_password.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/lesson.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/style.css</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/impl/MedicationDAOImpl.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/entity/User.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/service/HelpRequestService.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/navigation.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/entity/Medication.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/admin_dashboard.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/change_password.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/test/TestDAO.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/service/UserService.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/script.js</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/entity/HealthLesson.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/MedicationDAO.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/admin_lessons.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/index.html</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/HealthLessonDAO.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/login.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/dashboard.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/service/MedicationService.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/service/HealthLessonService.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/UserDAO.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/admin_users.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/volunteer.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/web/forgot_password.jsp</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/util/DBConnectionUtil.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/entity/Symptom.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/impl/HelpRequestDAOImpl.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/SymptomDAO.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/test/TestAllDAOs.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/service/SymptomService.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/HelpRequestDAO.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/impl/HealthLessonDAOImpl.java</file>
+            <file>file:/C:/Users/USER/Documents/NetBeansProjects/BabayagaCareWebApp/src/java/za/ac/tut/model/dao/impl/UserDAOImpl.java</file>
+        </group>
+    </open-files>
+</project-private>
