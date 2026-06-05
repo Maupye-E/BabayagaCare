@@ -315,7 +315,30 @@ function markTaken(button) {
   statusDiv.innerHTML = "✅ Taken today";
   statusDiv.style.color = "green";
   button.disabled = true;
+  updateAdherenceRate();
   showMessage("✅ Medication marked as taken!", "success");
+}
+
+function updateAdherenceRate() {
+  const medItems = document.querySelectorAll(
+    "#medicationList .medication-item",
+  );
+  let takenCount = 0;
+  medItems.forEach(function (item) {
+    const status = item.querySelector(".med-status");
+    if (status && status.innerHTML.includes("✅ Taken today")) {
+      takenCount++;
+    }
+  });
+  const totalCount = medItems.length;
+  const adherencePercent =
+    totalCount > 0 ? Math.round((takenCount / totalCount) * 100) : 0;
+
+  const adherenceRateElem = document.getElementById("adherenceRate");
+  const adherenceFillElem = document.getElementById("adherenceFill");
+
+  if (adherenceRateElem) adherenceRateElem.innerText = adherencePercent + "%";
+  if (adherenceFillElem) adherenceFillElem.style.width = adherencePercent + "%";
 }
 
 function deleteMedication(button) {
@@ -323,6 +346,7 @@ function deleteMedication(button) {
     const medItem = button.closest(".medication-item");
     medItem.remove();
     updateMedicationCount();
+    updateAdherenceRate();
     showMessage("✅ Medication deleted!", "success");
   }
 }
@@ -365,6 +389,7 @@ function addMedicationDemo(event) {
 
   medicationList.appendChild(newMed);
   updateMedicationCount();
+  updateAdherenceRate();
   closeModal("medicationModal");
   document.getElementById("addMedicationForm").reset();
   showMessage("✅ Medication added successfully!", "success");
@@ -745,7 +770,9 @@ function renderUsersTable() {
     .map(
       (user) => `
         <tr>
-            <td>${user.id}</td><td>${escapeHtml(user.name)}</td><td>${user.phone}</td>
+            <td>${user.id}</td>
+            <td>${escapeHtml(user.name)}</td>
+            <td>${user.phone}</td>
             <td>${user.location || "Not set"}</td>
             <td><span class="role-badge role-${user.role}">${user.role === "admin" ? "👑 Admin" : user.role === "volunteer" ? "🤝 Volunteer" : "👤 Patient"}</span></td>
             <td class="${user.isActive ? "status-active" : "status-inactive"}">${user.isActive ? "🟢 Active" : "🔴 Inactive"}</td>
@@ -844,7 +871,8 @@ function renderHelpRequestsTable() {
     .map(
       (req) => `
         <tr class="${req.urgent && req.status === "open" ? "urgent-row" : ""}">
-            <td>${req.id}</td><td>${escapeHtml(req.patientName)}</td>
+            <td>${req.id}</td>
+            <td>${escapeHtml(req.patientName)}</td>
             <td>${req.type === "medication" ? "💊 Medication" : "🚗 Ride"}</td>
             <td>${escapeHtml(req.location)}</td>
             <td><span class="status-badge status-${req.status}">${req.status}</span></td>
@@ -908,15 +936,19 @@ function renderLessonsTable() {
   tbody.innerHTML = lessonsData
     .map(
       (lesson) => `
-        <tr><td>${lesson.id}</td><td class="lesson-icon-cell">${lesson.icon}</td>
-        <td>${escapeHtml(lesson.title)}</td><td>${lesson.language}</td>
-        <td class="lesson-content-preview">${escapeHtml(lesson.shortContent)}</td>
-        <td class="${lesson.isActive ? "status-active" : "status-inactive"}">${lesson.isActive ? "🟢 Active" : "🔴 Inactive"}</td>
-        <td class="action-buttons">
-            <button onclick="editLesson(${lesson.id})" class="action-btn action-btn-primary">✏️ Edit</button>
-            <button onclick="toggleLessonStatus(${lesson.id})" class="action-btn action-btn-warning">${lesson.isActive ? "🔴 Deactivate" : "🟢 Activate"}</button>
-            <button onclick="deleteLesson(${lesson.id})" class="action-btn action-btn-danger">🗑️ Delete</button>
-        </td></tr>
+        <tr>
+            <td>${lesson.id}</td>
+            <td class="lesson-icon-cell">${lesson.icon}</td>
+            <td>${escapeHtml(lesson.title)}</td>
+            <td>${lesson.language}</td>
+            <td class="lesson-content-preview">${escapeHtml(lesson.shortContent)}</td>
+            <td class="${lesson.isActive ? "status-active" : "status-inactive"}">${lesson.isActive ? "🟢 Active" : "🔴 Inactive"}</td>
+            <td class="action-buttons">
+                <button onclick="editLesson(${lesson.id})" class="action-btn action-btn-primary">✏️ Edit</button>
+                <button onclick="toggleLessonStatus(${lesson.id})" class="action-btn action-btn-warning">${lesson.isActive ? "🔴 Deactivate" : "🟢 Activate"}</button>
+                <button onclick="deleteLesson(${lesson.id})" class="action-btn action-btn-danger">🗑️ Delete</button>
+            </td>
+        </tr>
     `,
     )
     .join("");
@@ -928,6 +960,7 @@ function editLesson(id) {
     "success",
   );
 }
+
 function toggleLessonStatus(id) {
   const lesson = lessonsData.find((l) => l.id === id);
   if (lesson) {
@@ -939,12 +972,177 @@ function toggleLessonStatus(id) {
     );
   }
 }
+
 function deleteLesson(id) {
   if (confirm("Delete this lesson?")) {
     lessonsData = lessonsData.filter((l) => l.id !== id);
     renderLessonsTable();
     showMessage("Lesson deleted!", "success");
   }
+}
+
+// ============ FILTER REQUESTS FUNCTION ============
+function filterRequests(status) {
+  // Remove active class from all filter buttons
+  const buttons = document.querySelectorAll(".filter-btn");
+  buttons.forEach((btn) => btn.classList.remove("active"));
+
+  // Add active class to clicked button
+  const activeButton = document.getElementById(
+    `filter${status.charAt(0).toUpperCase() + status.slice(1)}`,
+  );
+  if (activeButton) activeButton.classList.add("active");
+
+  // Filter the data
+  let filteredData = [];
+  if (status === "all") {
+    filteredData = helpRequestsData;
+  } else if (status === "urgent") {
+    filteredData = helpRequestsData.filter((req) => req.urgent === true);
+  } else {
+    filteredData = helpRequestsData.filter((req) => req.status === status);
+  }
+
+  // Re-render table with filtered data
+  const tbody = document.getElementById("requestsTableBody");
+  if (!tbody) return;
+
+  if (filteredData.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8">No help requests found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filteredData
+    .map(
+      (req) => `
+        <tr class="${req.urgent && req.status === "open" ? "urgent-row" : ""}">
+            <td>${req.id}</td>
+            <td>${escapeHtml(req.patientName)}</td>
+            <td>${req.type === "medication" ? "💊 Medication" : "🚗 Ride"}</td>
+            <td>${escapeHtml(req.location)}</td>
+            <td><span class="status-badge status-${req.status}">${req.status}</span></td>
+            <td>${req.urgent ? "🚨 Yes" : "No"}</td>
+            <td>${req.requestDate}</td>
+            <td class="action-buttons">
+                ${req.status === "open" ? `<button onclick="assignRequest(${req.id})" class="btn-small btn-assign">Assign</button>` : ""}
+                <button onclick="viewRequestDetails(${req.id})" class="btn-small btn-view">View</button>
+            </td>
+        </tr>
+    `,
+    )
+    .join("");
+}
+
+// ============ SAVE LESSON FUNCTION ============
+function saveLesson(event) {
+  event.preventDefault();
+
+  const action = document.getElementById("formAction").value;
+  const lessonId = document.getElementById("lessonId").value;
+  const lessonKey = document.getElementById("lessonKey").value;
+  const title = document.getElementById("lessonTitle").value;
+  const language = document.getElementById("lessonLanguage").value;
+  const content = document.getElementById("lessonContent").value;
+
+  if (action === "add") {
+    // Add new lesson
+    const newId = lessonsData.length + 1;
+    const newLesson = {
+      id: newId,
+      icon:
+        lessonKey === "hiv"
+          ? "🩸"
+          : lessonKey === "diabetes"
+            ? "🍬"
+            : lessonKey === "hypertension"
+              ? "❤️"
+              : lessonKey === "tb"
+                ? "🫁"
+                : "📖",
+      title: title,
+      language: language,
+      isActive: true,
+      shortContent: content.substring(0, 100) + "...",
+    };
+    lessonsData.push(newLesson);
+    showMessage("✅ Lesson added successfully!", "success");
+  } else if (action === "update") {
+    // Update existing lesson
+    const lesson = lessonsData.find((l) => l.id == lessonId);
+    if (lesson) {
+      lesson.title = title;
+      lesson.language = language;
+      lesson.shortContent = content.substring(0, 100) + "...";
+      showMessage("✅ Lesson updated successfully!", "success");
+    }
+  }
+
+  // Reset form and cancel edit
+  document.getElementById("lessonFormElement").reset();
+  cancelEdit();
+  renderLessonsTable();
+
+  return false;
+}
+
+// ============ CANCEL EDIT FUNCTION ============
+function cancelEdit() {
+  document.getElementById("formAction").value = "add";
+  document.getElementById("lessonId").value = "";
+  document.getElementById("formTitle").innerHTML = "➕ Add New Lesson";
+  document.getElementById("submitBtn").innerHTML = "Add Lesson";
+  document.getElementById("cancelBtn").classList.add("hidden");
+  document.getElementById("lessonFormElement").reset();
+}
+
+// ============ SELECT ADMIN USER FUNCTION ============
+function selectAdminUser(userId, userName) {
+  const selectedUserId = document.getElementById("selectedUserId");
+  const selectedUserInfo = document.getElementById("selectedUserInfo");
+  const selectedUserName = document.getElementById("selectedUserName");
+
+  if (selectedUserId) selectedUserId.value = userId;
+  if (selectedUserName) selectedUserName.innerHTML = userName;
+  if (selectedUserInfo) selectedUserInfo.classList.remove("hidden");
+}
+
+// ============ HANDLE ADMIN RESET PASSWORD ============
+function handleAdminResetPassword(event) {
+  event.preventDefault();
+
+  const userId = document.getElementById("selectedUserId").value;
+  const newPassword = document.getElementById("adminNewPassword").value;
+  const confirmPassword = document.getElementById("adminConfirmPassword").value;
+
+  if (!userId) {
+    showMessage("❌ Please select a user first!", "error");
+    return false;
+  }
+
+  if (newPassword !== confirmPassword) {
+    showMessage("❌ Passwords do not match!", "error");
+    return false;
+  }
+
+  if (newPassword.length < 6) {
+    showMessage("❌ Password must be at least 6 characters long!", "error");
+    return false;
+  }
+
+  const user = usersData.find((u) => u.id == userId);
+  if (user) {
+    showMessage(
+      `✅ Password reset for ${user.name}. New temporary password: ${newPassword}`,
+      "success",
+    );
+    document.getElementById("resetPasswordForm").reset();
+    document.getElementById("selectedUserInfo").classList.add("hidden");
+    document.getElementById("selectedUserId").value = "";
+  } else {
+    showMessage("❌ User not found!", "error");
+  }
+
+  return false;
 }
 
 // ============ INITIALIZATION ============
@@ -993,4 +1191,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Load lesson if on lesson page
   if (document.getElementById("lessonContent")) loadLesson();
+
+  // Update adherence rate on dashboard
+  if (document.getElementById("adherenceFill")) {
+    updateAdherenceRate();
+  }
 });

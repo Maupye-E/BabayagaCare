@@ -286,6 +286,32 @@ body {
   padding-bottom: 10px;
 }
 
+/* Help Item */
+.help-item {
+  background: #f8f9fa;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.help-item:hover {
+  transform: translateX(5px);
+  background: #e9ecef;
+}
+
+.help-status {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.help-date {
+  font-size: 11px;
+  color: #999;
+  margin-top: 3px;
+}
+
 /* ============ NAVIGATION STYLES ============ */
 .top-nav {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -337,6 +363,11 @@ body {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
+}
+
+/* Hidden Utility */
+.hidden {
+  display: none;
 }
 
 /* ============ LOGIN PAGE STYLES ============ */
@@ -1136,20 +1167,28 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.user-item.active {
-  background: #e8f4fd;
-  border-color: #3498db;
-  border-left: 4px solid #3498db;
+.user-item.selected {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.user-item.selected small {
+  color: #ddd;
 }
 
 .user-item strong {
   display: block;
-  color: #2c3e50;
+  color: inherit;
 }
 
 .user-item small {
   color: #7f8c8d;
   font-size: 12px;
+}
+
+.user-item.selected small {
+  color: #ddd;
 }
 
 .selected-user-info {
@@ -1384,10 +1423,6 @@ body {
 
   .edit-form {
     padding: 15px;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
   }
 }
 
