@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="2;url=login.html" />
+    <title>Logging out...</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="logout-page">
+    <div class="logout-container">
+      <h2>🚪 Logging out...</h2>
+      <p>Please wait while you are redirected to the login page.</p>
+      <p>
+        If you are not redirected automatically,
+        <a href="login.html">click here</a>.
+      </p>
+    </div>
+
+    <script>
+      // Clear any demo session data
+      sessionStorage.clear();
+      localStorage.clear();
+
+      // Optional: Clear any custom demo user data
+      console.log("User logged out (Demo Mode)");
+
+      // Redirect after 2 seconds (fallback in case meta refresh doesn't work)
+      setTimeout(function () {
+        window.location.href = "login.html";
+      }, 2000);
+    </script>
+  </body>
+</html>

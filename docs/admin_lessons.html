@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Health Lessons - Admin</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="dashboard-header">
+        <div>
+          <h2>📚 Manage Health Lessons</h2>
+          <p>Welcome, Admin User! | 👑 Admin</p>
+        </div>
+        <div class="header-buttons">
+          <button
+            onclick="window.location.href = 'admin_dashboard.html'"
+            class="btn btn-secondary"
+          >
+            ← Back to Admin
+          </button>
+          <button onclick="demoLogout()" class="btn btn-secondary">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+
+      <div id="messageBox" class="message" style="display: none"></div>
+
+      <!-- Add/Edit Lesson Form -->
+      <div class="edit-form" id="lessonForm">
+        <h3 id="formTitle">➕ Add New Lesson</h3>
+        <form id="lessonFormElement" onsubmit="return saveLesson(event);">
+          <input type="hidden" id="formAction" value="add" />
+          <input type="hidden" id="lessonId" value="" />
+
+          <div class="form-group">
+            <label>Lesson Key *</label>
+            <select id="lessonKey" required>
+              <option value="hiv">🩸 HIV/AIDS</option>
+              <option value="diabetes">🍬 Diabetes</option>
+              <option value="hypertension">❤️ Hypertension</option>
+              <option value="tb">🫁 Tuberculosis (TB)</option>
+              <option value="other">📖 Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Title *</label>
+            <input
+              type="text"
+              id="lessonTitle"
+              required
+              placeholder="e.g., Understanding HIV"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Language *</label>
+            <select id="lessonLanguage" required>
+              <option value="English">English</option>
+              <option value="isiZulu">isiZulu</option>
+              <option value="Sesotho">Sesotho</option>
+              <option value="Afrikaans">Afrikaans</option>
+              <option value="isiXhosa">isiXhosa</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Content *</label>
+            <textarea
+              id="lessonContent"
+              rows="8"
+              required
+              placeholder="Write the full lesson content here..."
+            ></textarea>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Add Lesson
+            </button>
+            <button
+              type="button"
+              onclick="cancelEdit()"
+              class="btn btn-secondary"
+              id="cancelBtn"
+              style="display: none"
+            >
+              Cancel Edit
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Lessons List -->
+      <h3>📋 Existing Lessons</h3>
+      <div class="table-container">
+        <table class="lessons-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Icon</th>
+              <th>Title</th>
+              <th>Language</th>
+              <th>Content Preview</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="lessonsTableBody">
+            <!-- Lessons will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stats-grid mt-20">
+        <div class="stat-card">
+          <h3 id="totalLessons">0</h3>
+          <p>📚 Total Lessons</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalLanguages">0</h3>
+          <p>🗣️ Languages</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

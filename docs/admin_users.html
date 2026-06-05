@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Users - Admin</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="dashboard-header">
+        <div>
+          <h2>👥 User Management</h2>
+          <p>Welcome, Admin User! | 👑 Admin</p>
+        </div>
+        <div class="header-buttons">
+          <button
+            onclick="window.location.href = 'admin_dashboard.html'"
+            class="btn btn-secondary"
+          >
+            ← Back
+          </button>
+          <button onclick="demoLogout()" class="btn btn-secondary">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+
+      <div id="messageBox" class="message" style="display: none"></div>
+
+      <div class="table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Location</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Registered</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <!-- Users will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3 id="totalUsers">0</h3>
+          <p>Total Users</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="patientsCount">0</h3>
+          <p>Patients</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="volunteersCount">0</h3>
+          <p>Volunteers</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="adminsCount">0</h3>
+          <p>Admins</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

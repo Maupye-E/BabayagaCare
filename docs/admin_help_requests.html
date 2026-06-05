@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Requests - Admin</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="dashboard-header">
+        <div>
+          <h2>📋 Help Requests Management</h2>
+          <p>Welcome, Admin User! | 👑 Admin</p>
+        </div>
+        <div class="header-buttons">
+          <button
+            onclick="window.location.href = 'admin_dashboard.html'"
+            class="btn btn-secondary"
+          >
+            ← Back
+          </button>
+          <button onclick="demoLogout()" class="btn btn-secondary">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+
+      <div id="messageBox" class="message" style="display: none"></div>
+
+      <div class="filter-buttons">
+        <button
+          onclick="filterRequests('all')"
+          class="filter-btn active"
+          id="filterAll"
+        >
+          📋 All
+        </button>
+        <button
+          onclick="filterRequests('open')"
+          class="filter-btn"
+          id="filterOpen"
+        >
+          🟡 Open
+        </button>
+        <button
+          onclick="filterRequests('assigned')"
+          class="filter-btn"
+          id="filterAssigned"
+        >
+          🔵 Assigned
+        </button>
+        <button
+          onclick="filterRequests('completed')"
+          class="filter-btn"
+          id="filterCompleted"
+        >
+          ✅ Completed
+        </button>
+        <button
+          onclick="filterRequests('urgent')"
+          class="filter-btn"
+          id="filterUrgent"
+        >
+          🚨 Urgent
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table class="requests-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Urgent</th>
+              <th>Volunteer</th>
+              <th>Requested</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="requestsTableBody">
+            <!-- Requests will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3 id="openCount">0</h3>
+          <p>🟡 Open</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="assignedCount">0</h3>
+          <p>🔵 Assigned</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="completedCount">0</h3>
+          <p>✅ Completed</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="urgentCount">0</h3>
+          <p>🚨 Urgent</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

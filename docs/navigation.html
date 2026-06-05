@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigation Component</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <div class="top-nav" id="mainNavigation">
+      <div class="nav-brand">
+        <a href="dashboard.html">🧙‍♀️ Babayaga Care</a>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a
+          href="admin_dashboard.html"
+          id="adminDashboardLink"
+          style="display: none"
+          >👑 Admin Dashboard</a
+        >
+        <a href="admin_users.html" id="adminUsersLink" style="display: none"
+          >👥 Manage Users</a
+        >
+        <a
+          href="admin_help_requests.html"
+          id="adminHelpRequestsLink"
+          style="display: none"
+          >📋 Help Requests</a
+        >
+        <a href="admin_lessons.html" id="adminLessonsLink" style="display: none"
+          >📚 Manage Lessons</a
+        >
+        <a href="change_password.html">🔑 Change Password</a>
+        <a
+          href="logout.html"
+          onclick="return confirm('Are you sure you want to logout?');"
+          >🚪 Logout</a
+        >
+      </div>
+      <div class="nav-user" id="navUser">👤 Loading...</div>
+    </div>
+
+    <script>
+      // Function to update navigation based on user role
+      function updateNavigation(userData) {
+        const navUser = document.getElementById("navUser");
+        if (userData && userData.name) {
+          navUser.innerHTML = `👤 ${userData.name} | ${userData.role}`;
+
+          // Show admin links if user is admin
+          if (userData.role === "admin") {
+            document.getElementById("adminDashboardLink").style.display =
+              "inline";
+            document.getElementById("adminUsersLink").style.display = "inline";
+            document.getElementById("adminHelpRequestsLink").style.display =
+              "inline";
+            document.getElementById("adminLessonsLink").style.display =
+              "inline";
+          }
+        }
+      }
+
+      // Load user data from session storage (for demo)
+      function loadUserForNavigation() {
+        const userData = sessionStorage.getItem("demoUser");
+        if (userData) {
+          updateNavigation(JSON.parse(userData));
+        } else {
+          // Default user (Patient)
+          updateNavigation({ name: "Demo User", role: "patient" });
+        }
+      }
+
+      // Check if we're on a page that should have navigation
+      if (
+        window.location.pathname.includes("dashboard.html") ||
+        window.location.pathname.includes("admin_")
+      ) {
+        loadUserForNavigation();
+      }
+    </script>
+  </body>
+</html>

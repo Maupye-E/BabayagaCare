@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Babayaga Care</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="dashboard-header">
+        <div>
+          <h2>👑 Admin Dashboard</h2>
+          <p>Welcome, Admin User! | Role: admin</p>
+        </div>
+        <div class="header-buttons">
+          <button
+            onclick="window.location.href = 'dashboard.html'"
+            class="btn btn-secondary"
+          >
+            📊 User Dashboard
+          </button>
+          <button
+            onclick="window.location.href = 'admin_lessons.html'"
+            class="btn btn-secondary"
+          >
+            📚 Manage Lessons
+          </button>
+          <button
+            onclick="window.location.href = 'change_password.html'"
+            class="btn btn-secondary"
+          >
+            🔑 Change Password
+          </button>
+          <button onclick="demoLogout()" class="btn btn-secondary">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+
+      <div id="messageBox" class="message" style="display: none"></div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3 id="totalUsers">156</h3>
+          <p>👥 Total Users</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="activeUsers">142</h3>
+          <p>🟢 Active</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalPatients">98</h3>
+          <p>👤 Patients</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalVolunteers">52</h3>
+          <p>🤝 Volunteers</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalAdmins">6</h3>
+          <p>👑 Admins</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalMedications">342</h3>
+          <p>💊 Medications</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalSymptoms">187</h3>
+          <p>📝 Symptoms</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalRequests">45</h3>
+          <p>📋 Requests</p>
+        </div>
+      </div>
+
+      <div class="admin-actions">
+        <div
+          class="admin-action-card"
+          onclick="window.location.href = 'admin_users.html'"
+        >
+          <div class="admin-action-icon">👥</div>
+          <h3>User Management</h3>
+          <p>View and manage all users</p>
+        </div>
+        <div
+          class="admin-action-card"
+          onclick="window.location.href = 'reset_password.html'"
+        >
+          <div class="admin-action-icon">🔐</div>
+          <h3>Reset Passwords</h3>
+          <p>Reset any user's password</p>
+        </div>
+        <div
+          class="admin-action-card"
+          onclick="window.location.href = 'admin_help_requests.html'"
+        >
+          <div class="admin-action-icon">📋</div>
+          <h3>Help Requests</h3>
+          <p>View all help requests</p>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>📊 Help Request Statistics</h3>
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="stat-label">🟡 Open</span
+            ><span class="stat-value" id="openRequests">12</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">🔵 Assigned</span
+            ><span class="stat-value" id="assignedRequests">18</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">✅ Completed</span
+            ><span class="stat-value" id="completedRequests">15</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">📊 Completion Rate</span
+            ><span class="stat-value" id="completionRate">78</span
+            ><span>%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">⏱️ Avg Response</span
+            ><span class="stat-value" id="avgResponseTime">4.2</span
+            ><span> hrs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

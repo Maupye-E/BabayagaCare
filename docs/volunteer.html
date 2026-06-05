@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volunteer Dashboard - Babayaga Care</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="dashboard-header">
+        <div>
+          <h2>🙋‍♂️ Welcome, Volunteer Demo User!</h2>
+          <p>📍 Soweto, Johannesburg</p>
+        </div>
+        <div class="header-buttons">
+          <button
+            onclick="window.location.href = 'dashboard.html'"
+            class="btn btn-secondary"
+          >
+            ← Dashboard
+          </button>
+          <button
+            onclick="window.location.href = 'change_password.html'"
+            class="btn btn-secondary"
+          >
+            🔐 Change Password
+          </button>
+          <button onclick="demoLogout()" class="btn btn-secondary">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+
+      <div id="messageBox" class="message" style="display: none"></div>
+
+      <!-- Open Help Requests Section -->
+      <div class="section">
+        <h2>🆕 Open Help Requests</h2>
+        <div id="openRequestsContainer">
+          <!-- Open requests will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- My Assigned Requests Section -->
+      <div class="section">
+        <h2>📋 My Assigned Requests</h2>
+        <div id="myRequestsContainer">
+          <!-- My requests will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
